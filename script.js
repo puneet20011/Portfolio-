@@ -123,3 +123,106 @@ arrowLeft.addEventListener('click', () => {
 
    activeProject();
 });
+
+// Contact Form Functionality
+const contactForm = document.querySelector('.contact-box form');
+
+contactForm.addEventListener('submit', async (e) => {
+   e.preventDefault();
+   
+   const submitBtn = contactForm.querySelector('.btn');
+   const originalText = submitBtn.textContent;
+   
+   // Show loading state
+   submitBtn.textContent = 'Sending...';
+   submitBtn.disabled = true;
+   
+   try {
+      const formData = new FormData(contactForm);
+      const response = await fetch(contactForm.action, {
+         method: 'POST',
+         body: formData,
+         headers: {
+            'Accept': 'application/json'
+         }
+      });
+      
+      if (response.ok) {
+         // Success
+         submitBtn.textContent = 'Message Sent!';
+         submitBtn.style.background = '#28a745';
+         contactForm.reset();
+         
+         // Reset button after 3 seconds
+         setTimeout(() => {
+            submitBtn.textContent = originalText;
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+         }, 3000);
+         
+         // Show success message
+         showNotification('Message sent successfully!', 'success');
+      } else {
+         throw new Error('Failed to send message');
+      }
+   } catch (error) {
+      // Error
+      submitBtn.textContent = 'Failed to Send';
+      submitBtn.style.background = '#dc3545';
+      
+      // Reset button after 3 seconds
+      setTimeout(() => {
+         submitBtn.textContent = originalText;
+         submitBtn.style.background = '';
+         submitBtn.disabled = false;
+      }, 3000);
+      
+      // Show error message
+      showNotification('Failed to send message. Please try again.', 'error');
+   }
+});
+
+// Notification function
+function showNotification(message, type) {
+   // Remove existing notification
+   const existingNotification = document.querySelector('.notification');
+   if (existingNotification) {
+      existingNotification.remove();
+   }
+   
+   // Create notification element
+   const notification = document.createElement('div');
+   notification.className = `notification ${type}`;
+   notification.textContent = message;
+   
+   // Style the notification
+   notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      color: white;
+      font-size: 1.6rem;
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      ${type === 'success' ? 'background: #28a745;' : 'background: #dc3545;'}
+   `;
+   
+   // Add to page
+   document.body.appendChild(notification);
+   
+   // Animate in
+   setTimeout(() => {
+      notification.style.transform = 'translateX(0)';
+   }, 100);
+   
+   // Remove after 5 seconds
+   setTimeout(() => {
+      notification.style.transform = 'translateX(100%)';
+      setTimeout(() => {
+         notification.remove();
+      }, 300);
+   }, 5000);
+}

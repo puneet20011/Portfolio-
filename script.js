@@ -202,13 +202,12 @@ contactForm.addEventListener('submit', async (e) => {
       if (response.status === 200) {
          // Success
          submitBtn.textContent = 'Message Sent!';
-         submitBtn.style.background = '#28a745';
+         // Do NOT change button background color
          contactForm.reset();
          
          // Reset button after 3 seconds
          setTimeout(() => {
             submitBtn.textContent = originalText;
-            submitBtn.style.background = '';
             submitBtn.disabled = false;
          }, 3000);
          

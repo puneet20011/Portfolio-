@@ -17,15 +17,57 @@
     --main-color: #D2042D;
     --white-color: #fff;
     --disabled-color: #fff3;
+    --text-color: #fff;
+}
+
+body.light-mode {
+    --bg-color: #fff;
+    --second-bg-color: #f3f4f8;
+    --main-color: #D2042D;
+    --white-color: #222;
+    --disabled-color: #2223;
+    --text-color: #222;
+}
+
+body, body * {
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+body {
+    color: var(--text-color);
+    background: var(--bg-color);
+    transition: background 0.25s, color 0.25s;
+}
+
+#theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 2.5rem;
+    color: var(--text-color);
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 200;
+    margin-left: 0;
+    margin-right: 0;
+    transition: color 0.3s;
+    vertical-align: middle;
+    align-self: center;
+}
+#theme-toggle:focus {
+    outline: none;
+    box-shadow: none;
+}
+#theme-toggle .bx {
+    pointer-events: none;
+}
+body.light-mode #theme-toggle {
+    color: #000;
 }
 
 html{
     font-size: 62.5%;
 
-}
-
-body{
-    color: var(--white-color);
 }
 
 header{
@@ -43,34 +85,21 @@ header{
     opacity: 0; */
 }
 
-/* header.active {
-    animation: show-header 1.5s linear forwards;
-    animation-delay: 1.2s;
-
+header nav {
+    margin-left: auto;
+    margin-right: 0;
 }
 
-@keyframes show-header {
-    100% {
-        visibility: visible;
-        opacity: 1;
-    }
-} */
-
-.logo{
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 700;
-    font-style: normal;
-    font-size: 3rem;
-    color: var(--white-color);
-}
-
-nav a{
+nav a {
     font-size: 2rem;
     color: var(--white-color);
     font-weight: 500;
     margin-left: 3.5rem;
     transition: .5s;
+}
+
+nav a:first-child {
+    margin-left: 0;
 }
 
 nav a:hover,
@@ -417,12 +446,22 @@ section.active {
 
 .home-img .img-box .img-item img {
     position: absolute;
-    top: 3rem;
-    display: block;
-    width: 85%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: center 20%; /* Show more of the top (face) */
+    border-radius: 50%;
     mix-blend-mode: lighten;
+    /* transform: scale(0.88); */ /* Reverted: remove zoom out */
+}
 
+body.light-mode .home-img .img-box .img-item img {
+    mix-blend-mode: normal !important;
+    border-radius: 50%;
+    object-position: center 20%; /* Keep same adjustment in light mode */
+    /* transform: scale(0.88); */ /* Reverted: remove zoom out */
 }
 
 .heading {
@@ -992,6 +1031,24 @@ section.active {
 @media screen and (max-width: 768px) {
     #menu-icon {
         display: block;
+        margin-left: auto;
+        margin-right: 3.5rem; /* Space for the theme toggle */
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        z-index: 110;
+    }
+    nav.active + #theme-toggle {
+        display: none;
+    }
+    nav.active {
+        text-align: center;
+    }
+    nav.active a {
+        margin: 4rem auto;
+    }
+    nav.active ~ .logo {
+        display: none;
     }
 
     nav {
@@ -1003,7 +1060,7 @@ section.active {
         background: var(--bg-color);
         border-top: .1rem solid rgba(0, 0, 0, .2);
         box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .2);
-        text-align: center;
+        text-align: right; /* Align nav links to the right */
         display: none;
     }
 
@@ -1013,7 +1070,7 @@ section.active {
 
     nav a {
         display: block;
-        margin: 4rem 0;
+        margin: 4rem 2rem 4rem auto; /* Top, right, bottom, left. Push links to the right */
     }
 
     .home {
@@ -1090,4 +1147,37 @@ section.active {
         font-size: 3.5rem;
     }
 
+}
+
+header nav {
+  position: static;
+}
+nav #theme-toggle {
+  margin-left: 0;
+}
+
+body.light-mode .home-img .img-box,
+body.light-mode .home-img .img-box .img-item {
+    background: #fff !important;
+    border: 2px solid #e0e0e0 !important;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+.home-img .img-box .img-item {
+    border: 2px solid #222;
+}
+body.light-mode .home-img .img-box .img-item img {
+    mix-blend-mode: normal !important;
+}
+
+.logo{
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 3rem;
+    color: var(--white-color);
+}
+
+.hide-logo {
+    display: none !important;
 }

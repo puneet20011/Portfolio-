@@ -3,10 +3,27 @@ const logoLink = document.querySelector('.logo');
 const sections = document.querySelectorAll('section');
 const menuIcon = document.querySelector('#menu-icon');
 const navbar = document.querySelector('header nav');
+const logo = document.querySelector('.logo');
 
 menuIcon.addEventListener('click', () => {
    menuIcon.classList.toggle('bx-x');
    navbar.classList.toggle('active');
+
+   // Hide logo on mobile when nav is open
+   if (window.innerWidth <= 768) {
+      if (navbar.classList.contains('active')) {
+         logo.classList.add('hide-logo');
+      } else {
+         logo.classList.remove('hide-logo');
+      }
+   }
+});
+
+// Restore logo if window is resized above 768px
+window.addEventListener('resize', () => {
+   if (window.innerWidth > 768) {
+      logo.classList.remove('hide-logo');
+   }
 });
 
 const activePage = () => {
@@ -45,6 +62,10 @@ navLinks.forEach((link, idx) => {
          setTimeout(() => {
             sections[idx].classList.add('active');
          }, 0); //1100
+      }
+      // Restore logo on mobile when switching sections (nav closes)
+      if (window.innerWidth <= 768) {
+         logo.classList.remove('hide-logo');
       }
    });
 });
@@ -278,3 +299,36 @@ function showNotification(message, type) {
       }, 300);
    }, 5000);
 }
+
+// Theme toggle logic
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = themeToggle.querySelector('i');
+
+function setTheme(mode) {
+  if (mode === 'light') {
+    document.body.classList.add('light-mode');
+    themeIcon.classList.remove('bx-moon');
+    themeIcon.classList.add('bx-sun');
+    localStorage.setItem('theme', 'light');
+  } else {
+    document.body.classList.remove('light-mode');
+    themeIcon.classList.remove('bx-sun');
+    themeIcon.classList.add('bx-moon');
+    localStorage.setItem('theme', 'dark');
+  }
+}
+
+themeToggle.addEventListener('click', () => {
+  const isLight = document.body.classList.toggle('light-mode');
+  setTheme(isLight ? 'light' : 'dark');
+});
+
+// On load, set theme from localStorage
+(function() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'light') {
+    setTheme('light');
+  } else {
+    setTheme('dark');
+  }
+})();

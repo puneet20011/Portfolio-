@@ -131,8 +131,41 @@ arrowLeft.addEventListener('click', () => {
 
 // Contact Form Functionality
 const contactForm = document.getElementById('contactForm');
+const emailInput = contactForm.querySelector('input[name="email"]');
+const emailError = document.getElementById('email-error');
+
+function validateEmail(email) {
+  // Simple email regex
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// Real-time validation
+emailInput.addEventListener('input', function() {
+  if (emailInput.value && !validateEmail(emailInput.value)) {
+    emailError.textContent = 'Please enter a valid email address.';
+    emailError.classList.add('show');
+    emailError.classList.remove('hide');
+  } else {
+    emailError.classList.remove('show');
+    emailError.classList.add('hide');
+    setTimeout(() => {
+      emailError.textContent = '';
+      emailError.classList.remove('hide');
+    }, 300);
+  }
+});
 
 contactForm.addEventListener('submit', async (e) => {
+   // Validate email before sending
+   if (!validateEmail(emailInput.value)) {
+     emailError.textContent = 'Please enter a valid email address.';
+     emailError.classList.add('show');
+     emailError.classList.remove('hide');
+     emailInput.focus();
+     e.preventDefault();
+     return;
+   }
+
    e.preventDefault();
    
    const submitBtn = contactForm.querySelector('.btn');

@@ -124,8 +124,13 @@ arrowLeft.addEventListener('click', () => {
    activeProject();
 });
 
+// EmailJS Configuration
+(function() {
+   emailjs.init("oLHv-CDyjnjoHmpdm"); // User's EmailJS public key
+})();
+
 // Contact Form Functionality
-const contactForm = document.querySelector('.contact-box form');
+const contactForm = document.getElementById('contactForm');
 
 contactForm.addEventListener('submit', async (e) => {
    e.preventDefault();
@@ -138,16 +143,30 @@ contactForm.addEventListener('submit', async (e) => {
    submitBtn.disabled = true;
    
    try {
-      const formData = new FormData(contactForm);
-      const response = await fetch(contactForm.action, {
-         method: 'POST',
-         body: formData,
-         headers: {
-            'Accept': 'application/json'
-         }
-      });
+      // Get form data
+      const formData = {
+         name: contactForm.querySelector('input[name="name"]').value,
+         email: contactForm.querySelector('input[name="email"]').value,
+         phone: contactForm.querySelector('input[name="phone"]').value,
+         subject: contactForm.querySelector('input[name="subject"]').value,
+         message: contactForm.querySelector('textarea[name="message"]').value
+      };
       
-      if (response.ok) {
+      // Send email using EmailJS
+      const response = await emailjs.send(
+         'service_kowbsva', // User's EmailJS service ID
+         'template_qqv9sds', // User's EmailJS template ID
+         {
+            to_name: 'Puneet',
+            from_name: formData.name,
+            from_email: formData.email,
+            from_phone: formData.phone,
+            subject: formData.subject,
+            message: formData.message
+         }
+      );
+      
+      if (response.status === 200) {
          // Success
          submitBtn.textContent = 'Message Sent!';
          submitBtn.style.background = '#28a745';
@@ -166,6 +185,7 @@ contactForm.addEventListener('submit', async (e) => {
          throw new Error('Failed to send message');
       }
    } catch (error) {
+      console.error('EmailJS Error:', error);
       // Error
       submitBtn.textContent = 'Failed to Send';
       submitBtn.style.background = '#dc3545';
